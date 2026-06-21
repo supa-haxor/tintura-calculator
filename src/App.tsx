@@ -17,7 +17,6 @@ type ServiceValues = {
   apellido: string;
   fechaColor: string;
   trabajoRealizado: string;
-  tinturasUtilizadas: string;
   decolorante: string;
   fantasiaColor: string;
   volumenOxicrem: string;
@@ -120,7 +119,6 @@ const initialValues: ServiceValues = {
   apellido: '',
   fechaColor: getTodayDateInputValue(),
   trabajoRealizado: '',
-  tinturasUtilizadas: '',
   decolorante: '',
   fantasiaColor: '',
   volumenOxicrem: '',
@@ -305,16 +303,6 @@ function App() {
           <fieldset className="form-section">
             <legend>Productos y quimicos</legend>
             <div className="field-list">
-              <InputCard
-                field={{
-                  label: 'Tinturas utilizadas',
-                  name: 'tinturasUtilizadas',
-                  placeholder: 'Ej: Majirel 7.1 + 8.13',
-                  value: values.tinturasUtilizadas,
-                  onChange: (value) => updateValue('tinturasUtilizadas', value),
-                }}
-              />
-
               <div className="dynamic-card">
                 <div className="dynamic-header">
                   <div>
