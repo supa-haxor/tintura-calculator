@@ -8,24 +8,24 @@
     {
       "id": "si",
       "nombre": "Si",
-      "precio": 0
+      "precio": 20000
     }
   ],
   "cepillados": [
     {
       "id": "corto",
       "nombre": "Corto",
-      "precio": 0
+      "precio": 20000
     },
     {
       "id": "medio",
       "nombre": "Medio",
-      "precio": 0
+      "precio": 25000
     },
     {
       "id": "largo",
       "nombre": "Largo",
-      "precio": 0
+      "precio": 35000
     }
   ]
 }
