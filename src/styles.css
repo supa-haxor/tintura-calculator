@@ -41,7 +41,7 @@ button {
 }
 
 .app-shell.has-floating-receipt {
-  padding-right: 340px;
+  padding-right: 300px;
 }
 
 .hero-card,
@@ -251,16 +251,16 @@ h2 {
 .receipt-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
 }
 
 .breakdown-receipt {
   display: grid;
   align-content: start;
-  gap: 14px;
-  padding: 16px;
+  gap: 8px;
+  padding: 10px;
   border: 1px solid #f1c8da;
-  border-radius: 20px;
+  border-radius: 16px;
   background:
     linear-gradient(#fffafd, #fffafd) padding-box,
     repeating-linear-gradient(90deg, #f1c8da 0 8px, transparent 8px 14px) border-box;
@@ -277,20 +277,20 @@ h2 {
 .breakdown-receipt h3 {
   margin: 0;
   color: #6d2e54;
-  font-size: 1.1rem;
+  font-size: 0.92rem;
   letter-spacing: -0.02em;
 }
 
 .breakdown-receipt dl {
   display: grid;
-  gap: 10px;
+  gap: 5px;
   margin: 0;
 }
 
 .receipt-row {
   display: grid;
   grid-template-columns: auto 1fr auto;
-  gap: 8px;
+  gap: 5px;
   align-items: end;
   color: #533448;
 }
@@ -306,7 +306,7 @@ h2 {
 .receipt-row dt {
   grid-column: 1;
   color: #6f5264;
-  font-size: 0.88rem;
+  font-size: 0.74rem;
   font-weight: 800;
 }
 
@@ -317,6 +317,7 @@ h2 {
   align-items: center;
   margin: 0;
   color: #3d2634;
+  font-size: 0.78rem;
   font-weight: 950;
   text-align: right;
   white-space: nowrap;
@@ -330,7 +331,7 @@ h2 {
 .receipt-row-featured dt,
 .receipt-row-featured dd {
   color: #8a2d61;
-  font-size: 1rem;
+  font-size: 0.82rem;
 }
 
 .receipt-row-danger dt,
@@ -343,11 +344,11 @@ h2 {
   align-items: center;
   justify-content: center;
   min-height: 28px;
-  padding: 0 9px;
+  padding: 0 7px;
   border-radius: 999px;
   background: #ffe7e7;
   color: #a33f4a;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 950;
 }
 
@@ -527,11 +528,11 @@ h2 {
   right: 24px;
   z-index: 20;
   display: grid;
-  width: 292px;
-  gap: 16px;
-  padding: 18px;
+  width: 258px;
+  gap: 10px;
+  padding: 12px;
   border: 1px solid rgba(186, 113, 151, 0.28);
-  border-radius: 26px;
+  border-radius: 20px;
   background: rgba(255, 250, 253, 0.94);
   box-shadow: 0 24px 70px rgba(89, 36, 64, 0.22);
   transform: translateY(-50%);
@@ -540,7 +541,7 @@ h2 {
 
 .receipt-eyebrow {
   color: #a93f73;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -549,35 +550,36 @@ h2 {
 .floating-receipt h3 {
   margin: 2px 0 0;
   color: #3d2634;
-  font-size: 1.5rem;
+  font-size: 1.15rem;
   line-height: 1;
 }
 
 .receipt-list {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
 }
 
 .receipt-list div {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-  padding: 10px;
-  border-radius: 16px;
+  padding: 7px 8px;
+  border-radius: 12px;
   background: #fff7fb;
 }
 
 .receipt-list dt {
   color: #6f5264;
-  font-size: 0.82rem;
+  font-size: 0.72rem;
   font-weight: 800;
 }
 
 .receipt-list dd {
   margin: 0;
   color: #3d2634;
+  font-size: 0.82rem;
   font-weight: 950;
 }
 
@@ -614,7 +616,7 @@ h2 {
 @media (max-width: 1180px) {
   .app-shell.has-floating-receipt {
     padding-right: 24px;
-    padding-bottom: 260px;
+    padding-bottom: 210px;
   }
 
   .floating-receipt {
@@ -638,7 +640,7 @@ h2 {
 
   .app-shell.has-floating-receipt {
     padding-right: 14px;
-    padding-bottom: 360px;
+    padding-bottom: 300px;
   }
 
   .hero-card,
@@ -684,9 +686,9 @@ h2 {
     right: 10px;
     bottom: 10px;
     left: 10px;
-    gap: 12px;
-    padding: 14px;
-    border-radius: 22px;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 20px;
   }
 
   .receipt-list {
