@@ -194,9 +194,9 @@ function App() {
     toNumber(values.toallasDesechables) * getUnitPrice('toallasDesechables');
   const totalProductos = totalQuimicosUsados + totalMateriales;
   const gananciasProductos = totalProductos * 0.3;
-  const gananciasServicio = totalProductos + precioCorte + precioCepillado;
-  const totalGanancias = gananciasServicio + gananciasProductos;
-  const valorEstimadoServicio = gananciasServicio + gananciasProductos + totalProductos;
+  const costoPorServicios = totalProductos + precioCorte + precioCepillado;
+  const valorEstimadoServicio = costoPorServicios + gananciasProductos + totalProductos;
+  const gananciaServicio = valorEstimadoServicio - (costoPorServicios + totalProductos);
   const cobro = toNumber(values.cobro);
   const descuento = cobro > 0 ? Math.max(valorEstimadoServicio - cobro, 0) : 0;
   const descuentoPorcentaje = valorEstimadoServicio > 0 ? (descuento / valorEstimadoServicio) * 100 : 0;
@@ -265,7 +265,7 @@ function App() {
   ];
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell ${isFormOpen ? 'has-floating-receipt' : ''}`}>
       <section className="hero-card">
         <div className="hero-copy">
           <span className="eyebrow">Calculadora de tintura</span>
@@ -288,6 +288,7 @@ function App() {
       {isPriceListOpen ? <PriceList products={products} servicePrices={servicePrices} /> : null}
 
       {isFormOpen ? (
+        <>
         <form className="service-form" id="service-form">
           <div className="form-header">
             <div>
@@ -404,14 +405,14 @@ function App() {
           <fieldset className="form-section auto-section">
             <legend>Resultados automaticos</legend>
             <div className="field-list">
-              <AutoCard label="Total de quimicos usados" value={formatMoney(totalQuimicosUsados)} />
-              <AutoCard label="Total materiales" value={formatMoney(totalMateriales)} />
+              <AutoCard label="Precio quimicos usados" value={formatMoney(totalQuimicosUsados)} />
+              <AutoCard label="Precio materiales usados" value={formatMoney(totalMateriales)} />
               <AutoCard label="Total productos" value={formatMoney(totalProductos)} />
               <AutoCard label="Ganancias por productos" value={formatMoney(gananciasProductos)} variant="success" />
               <AutoCard label="Precio corte" value={formatMoney(precioCorte)} />
               <AutoCard label="Precio cepillado" value={formatMoney(precioCepillado)} />
-              <AutoCard label="Ganancias por servicio" value={formatMoney(gananciasServicio)} />
-              <AutoCard label="Total ganancias" value={formatMoney(totalGanancias)} />
+              <AutoCard label="Costo por servicios" value={formatMoney(costoPorServicios)} />
+              <AutoCard label="Ganancia del servicio" value={formatMoney(gananciaServicio)} variant="success" />
               <AutoCard
                 label="Valor estimado del servicio"
                 value={formatMoney(valorEstimadoServicio)}
@@ -429,12 +430,14 @@ function App() {
             </div>
           </fieldset>
 
-          <div className="form-actions">
-            <button className="primary-action wide" type="button">
-              Guardar borrador
-            </button>
-          </div>
         </form>
+        <FloatingReceipt
+          totalProductos={formatMoney(totalProductos)}
+          costoPorServicios={formatMoney(costoPorServicios)}
+          valorEstimadoServicio={formatMoney(valorEstimadoServicio)}
+          gananciaServicio={formatMoney(gananciaServicio)}
+        />
+        </>
       ) : null}
     </main>
   );
@@ -513,6 +516,50 @@ function DiscountCard({ value, percentage }: { value: string; percentage: number
       </div>
       <input disabled value={value} />
     </label>
+  );
+}
+
+function FloatingReceipt({
+  totalProductos,
+  costoPorServicios,
+  valorEstimadoServicio,
+  gananciaServicio,
+}: {
+  totalProductos: string;
+  costoPorServicios: string;
+  valorEstimadoServicio: string;
+  gananciaServicio: string;
+}) {
+  return (
+    <aside className="floating-receipt" aria-label="Resumen del servicio">
+      <div>
+        <span className="receipt-eyebrow">Recibo</span>
+        <h3>Resumen</h3>
+      </div>
+
+      <dl className="receipt-list">
+        <div>
+          <dt>Total productos</dt>
+          <dd>{totalProductos}</dd>
+        </div>
+        <div>
+          <dt>Costo por servicios</dt>
+          <dd>{costoPorServicios}</dd>
+        </div>
+        <div className="receipt-featured">
+          <dt>Valor estimado</dt>
+          <dd>{valorEstimadoServicio}</dd>
+        </div>
+        <div className="receipt-success">
+          <dt>Ganancia del servicio</dt>
+          <dd>{gananciaServicio}</dd>
+        </div>
+      </dl>
+
+      <button className="primary-action receipt-action" type="button">
+        Enviar
+      </button>
+    </aside>
   );
 }
 
