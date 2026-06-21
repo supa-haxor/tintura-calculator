@@ -193,7 +193,7 @@ function App() {
     toNumber(values.papelAluminio) * getUnitPrice('aluminio') +
     toNumber(values.toallasDesechables) * getUnitPrice('toallasDesechables');
   const totalProductos = totalQuimicosUsados + totalMateriales;
-  const gananciasProductos = totalProductos * 1.3;
+  const gananciasProductos = totalProductos * 0.3;
   const gananciasServicio = totalProductos + precioCorte + precioCepillado;
   const totalGanancias = gananciasServicio + gananciasProductos;
   const valorEstimadoServicio = gananciasServicio + gananciasProductos + totalProductos;
