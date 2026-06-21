@@ -1,0 +1,31 @@
+{
+  "cortes": [
+    {
+      "id": "no",
+      "nombre": "No",
+      "precio": 0
+    },
+    {
+      "id": "si",
+      "nombre": "Si",
+      "precio": 0
+    }
+  ],
+  "cepillados": [
+    {
+      "id": "corto",
+      "nombre": "Corto",
+      "precio": 0
+    },
+    {
+      "id": "medio",
+      "nombre": "Medio",
+      "precio": 0
+    },
+    {
+      "id": "largo",
+      "nombre": "Largo",
+      "precio": 0
+    }
+  ]
+}

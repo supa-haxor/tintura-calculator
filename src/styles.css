@@ -171,6 +171,10 @@ h2 {
   margin-bottom: 16px;
 }
 
+.price-header-spaced {
+  margin-top: 26px;
+}
+
 .price-table-wrapper {
   overflow-x: auto;
   border: 1px solid #f1c8da;
@@ -182,6 +186,10 @@ h2 {
   min-width: 680px;
   border-collapse: collapse;
   background: #fffafd;
+}
+
+.service-price-table {
+  min-width: 420px;
 }
 
 .price-table th,
@@ -352,6 +360,38 @@ h2 {
   background: #fffdf1;
   color: #7a5423;
   opacity: 1;
+}
+
+.auto-card-success {
+  border-color: #9bd8af;
+  background: #eafbf0;
+}
+
+.auto-card-success input:disabled {
+  border-color: #a9dfb8;
+  background: #f6fff8;
+  color: #1f7a43;
+  font-weight: 900;
+}
+
+.auto-card-featured {
+  grid-column: 1 / -1;
+  border-color: #d74285;
+  background: linear-gradient(135deg, #fff8dc, #ffe1ee);
+  box-shadow: 0 16px 36px rgba(159, 63, 134, 0.18);
+}
+
+.auto-card-featured span {
+  color: #8a2d61;
+}
+
+.auto-card-featured input:disabled {
+  min-height: 56px;
+  border-color: #efb5cf;
+  background: rgba(255, 255, 255, 0.72);
+  color: #7c2d57;
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  font-weight: 950;
 }
 
 .form-actions {

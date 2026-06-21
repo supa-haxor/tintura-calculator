@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import productPrices from './data/prices.json';
+import servicePriceData from './data/servicePrices.json';
 
 type FieldType = 'text' | 'date' | 'number' | 'textarea' | 'select';
 
@@ -26,7 +27,6 @@ type ServiceValues = {
   corte: string;
   cepillado: string;
   cobro: string;
-  descuento: string;
 };
 
 type ValueField = Field & {
@@ -48,7 +48,19 @@ type ProductPrice = {
   precio: number;
 };
 
+type ServicePrice = {
+  id: string;
+  nombre: string;
+  precio: number;
+};
+
+type ServicePrices = {
+  cortes: ServicePrice[];
+  cepillados: ServicePrice[];
+};
+
 const products = productPrices as ProductPrice[];
+const servicePrices = servicePriceData as ServicePrices;
 
 const getProduct = (id: string) => {
   const product = products.find((currentProduct) => currentProduct.id === id);
@@ -65,6 +77,9 @@ const getUnitPrice = (id: string) => {
 
   return product.precio / product.cantidad;
 };
+
+const getServicePrice = (options: ServicePrice[], selectedName: string) =>
+  options.find((option) => option.nombre === selectedName)?.precio ?? 0;
 
 const clientFields: Field[] = [
   { label: 'Nombre', name: 'nombre', placeholder: 'Ej: Maria' },
@@ -115,7 +130,6 @@ const initialValues: ServiceValues = {
   corte: '',
   cepillado: '',
   cobro: '',
-  descuento: '',
 };
 
 function App() {
@@ -168,12 +182,25 @@ function App() {
   const plexProtecteur = decolorante * 0.066;
   const oxicremPorTintura = totalTinturas * 1.5;
   const oxicremPorDecolorante = decolorante;
+  const precioCorte = getServicePrice(servicePrices.cortes, values.corte);
+  const precioCepillado = getServicePrice(servicePrices.cepillados, values.cepillado);
   const totalQuimicosUsados =
     decolorante * getUnitPrice('decolorante') +
     totalTinturas * getUnitPrice('tintura') +
     (oxicremPorTintura + oxicremPorDecolorante) * getUnitPrice('oxicrem') +
+    plexProtecteur * getUnitPrice('plexProtecteur') +
     fantasiaColor * getUnitPrice('fantasiaColor') +
-    keratinaAlisado * getUnitPrice('proKeratineAlisado') * 2;
+    keratinaAlisado * getUnitPrice('proKeratineAlisado');
+  const totalMateriales =
+    toNumber(values.papelAluminio) * getUnitPrice('aluminio') +
+    toNumber(values.toallasDesechables) * getUnitPrice('toallasDesechables');
+  const totalProductos = totalQuimicosUsados + totalMateriales;
+  const gananciasProductos = totalProductos * 1.3;
+  const gananciasServicio = totalProductos + precioCorte + precioCepillado;
+  const totalGanancias = gananciasServicio + gananciasProductos;
+  const valorEstimadoServicio = gananciasServicio + gananciasProductos + totalProductos;
+  const cobro = toNumber(values.cobro);
+  const descuento = cobro > 0 ? Math.max(valorEstimadoServicio - cobro, 0) : 0;
 
   const decoloranteProduct = getProduct('decolorante');
   const tinturaProduct = getProduct('tintura');
@@ -213,7 +240,7 @@ function App() {
       label: 'Corte',
       name: 'corte',
       type: 'select',
-      options: ['No', 'Si'],
+      options: servicePrices.cortes.map((option) => option.nombre),
       value: values.corte,
       onChange: (value) => updateValue('corte', value),
     },
@@ -221,7 +248,7 @@ function App() {
       label: 'Cepillado',
       name: 'cepillado',
       type: 'select',
-      options: ['Corto', 'Medio', 'Largo'],
+      options: servicePrices.cepillados.map((option) => option.nombre),
       value: values.cepillado,
       onChange: (value) => updateValue('cepillado', value),
     },
@@ -235,14 +262,6 @@ function App() {
       placeholder: '$0.00',
       value: values.cobro,
       onChange: (value) => updateValue('cobro', value),
-    },
-    {
-      label: 'Descuento',
-      name: 'descuento',
-      type: 'number',
-      placeholder: '$0.00',
-      value: values.descuento,
-      onChange: (value) => updateValue('descuento', value),
     },
   ];
 
@@ -267,7 +286,7 @@ function App() {
         </div>
       </section>
 
-      {isPriceListOpen ? <PriceList products={products} /> : null}
+      {isPriceListOpen ? <PriceList products={products} servicePrices={servicePrices} /> : null}
 
       {isFormOpen ? (
         <form className="service-form" id="service-form">
@@ -397,22 +416,29 @@ function App() {
             <legend>Resultados automaticos</legend>
             <div className="field-list">
               <AutoCard label="Total de quimicos usados" value={formatMoney(totalQuimicosUsados)} />
-              {[
-                'Total materiales',
-                'Total productos',
-                'Ganancias por productos',
-                'Precio corte',
-                'Precio cepillado',
-                'Ganancias por servicio',
-                'Total ganancias',
-                'Valor estimado del servicio',
-              ].map((label) => (
-                <AutoCard label={label} value="Se calcula despues" key={label} />
-              ))}
+              <AutoCard label="Total materiales" value={formatMoney(totalMateriales)} />
+              <AutoCard label="Total productos" value={formatMoney(totalProductos)} />
+              <AutoCard label="Ganancias por productos" value={formatMoney(gananciasProductos)} variant="success" />
+              <AutoCard label="Precio corte" value={formatMoney(precioCorte)} />
+              <AutoCard label="Precio cepillado" value={formatMoney(precioCepillado)} />
+              <AutoCard label="Ganancias por servicio" value={formatMoney(gananciasServicio)} />
+              <AutoCard label="Total ganancias" value={formatMoney(totalGanancias)} />
+              <AutoCard
+                label="Valor estimado del servicio"
+                value={formatMoney(valorEstimadoServicio)}
+                variant="featured"
+              />
             </div>
           </fieldset>
 
           <FieldGroup title="Cobro final" fields={paymentFields} />
+
+          <fieldset className="form-section">
+            <legend>Descuento</legend>
+            <div className="field-list">
+              <AutoCard label="Descuento" value={formatMoney(descuento)} />
+            </div>
+          </fieldset>
 
           <div className="form-actions">
             <button className="primary-action wide" type="button">
@@ -480,16 +506,16 @@ function InputCard({ field }: { field: ValueField }) {
   );
 }
 
-function AutoCard({ label, value }: { label: string; value: string }) {
+function AutoCard({ label, value, variant }: { label: string; value: string; variant?: 'success' | 'featured' }) {
   return (
-    <label className="input-card auto-card">
+    <label className={`input-card auto-card ${variant ? `auto-card-${variant}` : ''}`}>
       <span>{label}</span>
       <input disabled value={value} />
     </label>
   );
 }
 
-function PriceList({ products }: { products: ProductPrice[] }) {
+function PriceList({ products, servicePrices }: { products: ProductPrice[]; servicePrices: ServicePrices }) {
   return (
     <section className="price-card" id="price-list">
       <div className="price-header">
@@ -518,6 +544,41 @@ function PriceList({ products }: { products: ProductPrice[] }) {
                 </td>
                 <td>{formatMoney(product.precio)}</td>
                 <td>{formatMoney(product.precio / product.cantidad)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="price-header price-header-spaced">
+        <div>
+          <span className="eyebrow">Servicios</span>
+          <h2>Cortes y cepillados</h2>
+        </div>
+      </div>
+
+      <div className="price-table-wrapper">
+        <table className="price-table service-price-table">
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Opcion</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody>
+            {servicePrices.cortes.map((service) => (
+              <tr key={`corte-${service.id}`}>
+                <td>Corte</td>
+                <td>{service.nombre}</td>
+                <td>{formatMoney(service.precio)}</td>
+              </tr>
+            ))}
+            {servicePrices.cepillados.map((service) => (
+              <tr key={`cepillado-${service.id}`}>
+                <td>Cepillado</td>
+                <td>{service.nombre}</td>
+                <td>{formatMoney(service.precio)}</td>
               </tr>
             ))}
           </tbody>
