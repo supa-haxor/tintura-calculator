@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import prices from './data/prices.json';
+import productPrices from './data/prices.json';
 
 type FieldType = 'text' | 'date' | 'number' | 'textarea' | 'select';
 
@@ -40,6 +40,32 @@ type Tintura = {
   gramos: string;
 };
 
+type ProductPrice = {
+  id: string;
+  nombre: string;
+  cantidad: number;
+  tipoMedida: string;
+  precio: number;
+};
+
+const products = productPrices as ProductPrice[];
+
+const getProduct = (id: string) => {
+  const product = products.find((currentProduct) => currentProduct.id === id);
+
+  if (!product) {
+    throw new Error(`Producto no encontrado: ${id}`);
+  }
+
+  return product;
+};
+
+const getUnitPrice = (id: string) => {
+  const product = getProduct(id);
+
+  return product.precio / product.cantidad;
+};
+
 const clientFields: Field[] = [
   { label: 'Nombre', name: 'nombre', placeholder: 'Ej: Maria' },
   { label: 'Apellido', name: 'apellido', placeholder: 'Ej: Rodriguez' },
@@ -70,20 +96,18 @@ const initialValues: ServiceValues = {
   descuento: '',
 };
 
-const moneyFormatter = new Intl.NumberFormat('es', {
-  style: 'currency',
-  currency: 'USD',
-});
-
 const formatNumber = (value: number) =>
   new Intl.NumberFormat('es', {
     maximumFractionDigits: 2,
   }).format(value);
 
+const formatMoney = (value: number) => `$${new Intl.NumberFormat('es').format(Math.round(value))}`;
+
 const toNumber = (value: string) => Number(value) || 0;
 
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isPriceListOpen, setIsPriceListOpen] = useState(false);
   const [values, setValues] = useState<ServiceValues>(initialValues);
   const [tinturas, setTinturas] = useState<Tintura[]>([{ nombre: '', gramos: '' }]);
 
@@ -115,11 +139,20 @@ function App() {
   const oxicremPorTintura = totalTinturas * 1.5;
   const oxicremPorDecolorante = decolorante;
   const totalQuimicosUsados =
-    decolorante * prices.decolorante +
-    totalTinturas * prices.tintura +
-    (oxicremPorTintura + oxicremPorDecolorante) * prices.oxicrem +
-    fantasiaColor * prices.fantasiaColor +
-    keratinaAlisado * prices.keratina * 2;
+    decolorante * getUnitPrice('decolorante') +
+    totalTinturas * getUnitPrice('tintura') +
+    (oxicremPorTintura + oxicremPorDecolorante) * getUnitPrice('oxicrem') +
+    fantasiaColor * getUnitPrice('fantasiaColor') +
+    keratinaAlisado * getUnitPrice('proKeratineAlisado') * 2;
+
+  const decoloranteProduct = getProduct('decolorante');
+  const tinturaProduct = getProduct('tintura');
+  const oxicremProduct = getProduct('oxicrem');
+  const fantasiaColorProduct = getProduct('fantasiaColor');
+  const plexProtecteurProduct = getProduct('plexProtecteur');
+  const keratinaProduct = getProduct('proKeratineAlisado');
+  const aluminioProduct = getProduct('aluminio');
+  const toallasProduct = getProduct('toallasDesechables');
 
   const controlledClientFields = clientFields.map((field) => ({
     ...field,
@@ -133,7 +166,7 @@ function App() {
       name: 'papelAluminio',
       type: 'number',
       placeholder: 'Cantidad',
-      unit: 'hojas',
+      unit: aluminioProduct.tipoMedida,
       value: values.papelAluminio,
       onChange: (value) => updateValue('papelAluminio', value),
     },
@@ -142,7 +175,7 @@ function App() {
       name: 'toallasDesechables',
       type: 'number',
       placeholder: 'Cantidad',
-      unit: 'hojas',
+      unit: toallasProduct.tipoMedida,
       value: values.toallasDesechables,
       onChange: (value) => updateValue('toallasDesechables', value),
     },
@@ -194,10 +227,17 @@ function App() {
           </p>
         </div>
 
-        <button className="primary-action" type="button" onClick={() => setIsFormOpen(true)}>
-          Nuevo servicio
-        </button>
+        <div className="hero-actions">
+          <button className="primary-action" type="button" onClick={() => setIsFormOpen(true)}>
+            Nuevo servicio
+          </button>
+          <button className="secondary-action" type="button" onClick={() => setIsPriceListOpen((isOpen) => !isOpen)}>
+            {isPriceListOpen ? 'Ocultar precios' : 'Ver precios'}
+          </button>
+        </div>
       </section>
+
+      {isPriceListOpen ? <PriceList products={products} /> : null}
 
       {isFormOpen ? (
         <form className="service-form">
@@ -253,10 +293,10 @@ function App() {
                         type="number"
                         min="0"
                         value={tintura.gramos}
-                        placeholder="Gramos"
+                        placeholder={tinturaProduct.tipoMedida}
                         onChange={(event) => updateTintura(index, 'gramos', event.target.value)}
                       />
-                      <span className="unit-pill">gr</span>
+                      <span className="unit-pill">{tinturaProduct.tipoMedida}</span>
                       {tinturas.length > 1 ? (
                         <button className="remove-button" type="button" onClick={() => removeTintura(index)}>
                           Quitar
@@ -273,7 +313,7 @@ function App() {
                   name: 'decolorante',
                   type: 'number',
                   placeholder: 'Cantidad',
-                  unit: 'gr',
+                  unit: decoloranteProduct.tipoMedida,
                   value: values.decolorante,
                   onChange: (value) => updateValue('decolorante', value),
                 }}
@@ -284,12 +324,12 @@ function App() {
                   name: 'fantasiaColor',
                   type: 'number',
                   placeholder: 'Cantidad',
-                  unit: 'gr',
+                  unit: fantasiaColorProduct.tipoMedida,
                   value: values.fantasiaColor,
                   onChange: (value) => updateValue('fantasiaColor', value),
                 }}
               />
-              <AutoCard label="Plex protecteur" value={`${formatNumber(plexProtecteur)} gr`} />
+              <AutoCard label="Plex protecteur" value={`${formatNumber(plexProtecteur)} ${plexProtecteurProduct.tipoMedida}`} />
               <InputCard
                 field={{
                   label: 'Volumen de oxicrem',
@@ -299,15 +339,21 @@ function App() {
                   onChange: (value) => updateValue('volumenOxicrem', value),
                 }}
               />
-              <AutoCard label="Cantidad de oxicrem por tintura" value={`${formatNumber(oxicremPorTintura)} gr`} />
-              <AutoCard label="Cantidad de oxicrem por decolorante" value={`${formatNumber(oxicremPorDecolorante)} gr`} />
+              <AutoCard
+                label="Cantidad de oxicrem por tintura"
+                value={`${formatNumber(oxicremPorTintura)} ${oxicremProduct.tipoMedida}`}
+              />
+              <AutoCard
+                label="Cantidad de oxicrem por decolorante"
+                value={`${formatNumber(oxicremPorDecolorante)} ${oxicremProduct.tipoMedida}`}
+              />
               <InputCard
                 field={{
                   label: 'Keratina alisado permanente',
                   name: 'keratinaAlisado',
                   type: 'number',
                   placeholder: 'Cantidad',
-                  unit: 'ml',
+                  unit: keratinaProduct.tipoMedida,
                   value: values.keratinaAlisado,
                   onChange: (value) => updateValue('keratinaAlisado', value),
                 }}
@@ -320,7 +366,7 @@ function App() {
           <fieldset className="form-section auto-section">
             <legend>Resultados automaticos</legend>
             <div className="field-list">
-              <AutoCard label="Total de quimicos usados" value={moneyFormatter.format(totalQuimicosUsados)} />
+              <AutoCard label="Total de quimicos usados" value={formatMoney(totalQuimicosUsados)} />
               {[
                 'Total materiales',
                 'Total productos',
@@ -410,6 +456,44 @@ function AutoCard({ label, value }: { label: string; value: string }) {
       <span>{label}</span>
       <input disabled value={value} />
     </label>
+  );
+}
+
+function PriceList({ products }: { products: ProductPrice[] }) {
+  return (
+    <section className="price-card">
+      <div className="price-header">
+        <div>
+          <span className="eyebrow">Lista de precios</span>
+          <h2>Productos</h2>
+        </div>
+      </div>
+
+      <div className="price-table-wrapper">
+        <table className="price-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Unidad de medida</th>
+              <th>Precio</th>
+              <th>Precio por unidad</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((product) => (
+              <tr key={product.id}>
+                <td>{product.nombre}</td>
+                <td>
+                  {formatNumber(product.cantidad)} {product.tipoMedida}
+                </td>
+                <td>{formatMoney(product.precio)}</td>
+                <td>{formatMoney(product.precio / product.cantidad)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 }
 

@@ -1,7 +1,142 @@
-{
-  "decolorante": 0,
-  "tintura": 0,
-  "oxicrem": 0,
-  "fantasiaColor": 0,
-  "keratina": 0
-}
+[
+  {
+    "id": "decolorante",
+    "nombre": "Decolorante",
+    "cantidad": 500,
+    "tipoMedida": "gr",
+    "precio": 100000
+  },
+  {
+    "id": "tintura",
+    "nombre": "Tintura",
+    "cantidad": 60,
+    "tipoMedida": "gr",
+    "precio": 45000
+  },
+  {
+    "id": "oxicrem",
+    "nombre": "Oxicrem",
+    "cantidad": 1000,
+    "tipoMedida": "gr",
+    "precio": 15000
+  },
+  {
+    "id": "aluminio",
+    "nombre": "Aluminio",
+    "cantidad": 80,
+    "tipoMedida": "hojas",
+    "precio": 18000
+  },
+  {
+    "id": "toallasDesechables",
+    "nombre": "Toallas desechables",
+    "cantidad": 50,
+    "tipoMedida": "hojas",
+    "precio": 60000
+  },
+  {
+    "id": "plexProtecteur",
+    "nombre": "Plex protecteur",
+    "cantidad": 460,
+    "tipoMedida": "gr",
+    "precio": 260000
+  },
+  {
+    "id": "fantasiaColor",
+    "nombre": "Fantasia color",
+    "cantidad": 270,
+    "tipoMedida": "gr",
+    "precio": 28000
+  },
+  {
+    "id": "proKeratineAlisado",
+    "nombre": "ProKeratine alisado",
+    "cantidad": 500,
+    "tipoMedida": "gr",
+    "precio": 270000
+  },
+  {
+    "id": "tinteAminoil",
+    "nombre": "Tinte aminoil",
+    "cantidad": 60,
+    "tipoMedida": "gr",
+    "precio": 45000
+  },
+  {
+    "id": "aceiteArgan",
+    "nombre": "Aceite de argan",
+    "cantidad": 95,
+    "tipoMedida": "gr",
+    "precio": 85000
+  },
+  {
+    "id": "shampooAminoil",
+    "nombre": "Ch. Aminoil",
+    "cantidad": 250,
+    "tipoMedida": "gr",
+    "precio": 26000
+  },
+  {
+    "id": "sellanteAminoil",
+    "nombre": "Sellante aminoil",
+    "cantidad": 250,
+    "tipoMedida": "gr",
+    "precio": 26000
+  },
+  {
+    "id": "shampooCeremidas",
+    "nombre": "Ch. Ceremidas",
+    "cantidad": 320,
+    "tipoMedida": "gr",
+    "precio": 38000
+  },
+  {
+    "id": "shampooNutritivo",
+    "nombre": "CH. NUTRITIVO",
+    "cantidad": 1000,
+    "tipoMedida": "gr",
+    "precio": 60000
+  },
+  {
+    "id": "shampooReparadorPuntas",
+    "nombre": "CH. Reparador puntas",
+    "cantidad": 400,
+    "tipoMedida": "gr",
+    "precio": 38000
+  },
+  {
+    "id": "shampooEnergizante",
+    "nombre": "CH. Energizante",
+    "cantidad": 400,
+    "tipoMedida": "gr",
+    "precio": 38000
+  },
+  {
+    "id": "cremaPeinarLisos",
+    "nombre": "Crema peinar lisos",
+    "cantidad": 280,
+    "tipoMedida": "gr",
+    "precio": 56000
+  },
+  {
+    "id": "kitArcilla",
+    "nombre": "KIT arcilla",
+    "cantidad": 280,
+    "tipoMedida": "gr",
+    "precio": 100000
+  },
+  {
+    "id": "serumPrecolor",
+    "nombre": "Serum precolor",
+    "cantidad": 250,
+    "tipoMedida": "gr",
+    "precio": 50000
+  },
+  {
+    "id": "shampooLisoAbsoluto",
+    "nombre": "Shampoo Liso Absoluto",
+    "cantidad": 400,
+    "tipoMedida": "gr",
+    "precio": 120000
+  }
+]

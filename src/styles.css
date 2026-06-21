@@ -106,6 +106,7 @@ h2 {
 }
 
 .primary-action,
+.secondary-action,
 .ghost-button,
 .small-button,
 .remove-button {
@@ -126,7 +127,22 @@ h2 {
   box-shadow: 0 14px 32px rgba(159, 63, 134, 0.32);
 }
 
+.secondary-action {
+  width: fit-content;
+  padding: 16px 22px;
+  border: 1px solid #edc8d9;
+  background: #fffafd;
+  color: #9d3369;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .primary-action:hover,
+.secondary-action:hover,
 .ghost-button:hover,
 .small-button:hover,
 .remove-button:hover {
@@ -139,6 +155,51 @@ h2 {
   border-radius: 30px;
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
+}
+
+.price-card {
+  width: min(100%, 980px);
+  margin: 22px auto 0;
+  padding: clamp(18px, 4vw, 30px);
+  border: 1px solid rgba(186, 113, 151, 0.24);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 24px 70px rgba(89, 36, 64, 0.12);
+}
+
+.price-header {
+  margin-bottom: 16px;
+}
+
+.price-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #f1c8da;
+  border-radius: 18px;
+}
+
+.price-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  background: #fffafd;
+}
+
+.price-table th,
+.price-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #f6dbe7;
+  text-align: left;
+}
+
+.price-table th {
+  background: #ffe1ee;
+  color: #7c2d57;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.price-table tr:last-child td {
+  border-bottom: 0;
 }
 
 .form-header {
@@ -318,6 +379,11 @@ h2 {
   }
 
   .primary-action {
+    width: 100%;
+  }
+
+  .hero-actions,
+  .secondary-action {
     width: 100%;
   }
 
