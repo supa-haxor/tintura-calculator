@@ -78,10 +78,32 @@ const clientFields: Field[] = [
   },
 ];
 
+const formatNumber = (value: number) =>
+  new Intl.NumberFormat('es', {
+    maximumFractionDigits: 2,
+  }).format(value);
+
+const formatMoney = (value: number) => `$${new Intl.NumberFormat('es').format(Math.round(value))}`;
+
+const toNumber = (value: string) => Number(value) || 0;
+
+const getTodayDateInputValue = () => {
+  const today = new Date();
+  const timezoneOffset = today.getTimezoneOffset() * 60_000;
+
+  return new Date(today.getTime() - timezoneOffset).toISOString().slice(0, 10);
+};
+
+const scrollToContent = (elementId: string) => {
+  window.setTimeout(() => {
+    document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 0);
+};
+
 const initialValues: ServiceValues = {
   nombre: '',
   apellido: '',
-  fechaColor: '',
+  fechaColor: getTodayDateInputValue(),
   trabajoRealizado: '',
   tinturasUtilizadas: '',
   decolorante: '',
@@ -95,15 +117,6 @@ const initialValues: ServiceValues = {
   cobro: '',
   descuento: '',
 };
-
-const formatNumber = (value: number) =>
-  new Intl.NumberFormat('es', {
-    maximumFractionDigits: 2,
-  }).format(value);
-
-const formatMoney = (value: number) => `$${new Intl.NumberFormat('es').format(Math.round(value))}`;
-
-const toNumber = (value: string) => Number(value) || 0;
 
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -129,6 +142,23 @@ function App() {
 
   const removeTintura = (index: number) => {
     setTinturas((currentTinturas) => currentTinturas.filter((_, tinturaIndex) => tinturaIndex !== index));
+  };
+
+  const openServiceForm = () => {
+    setIsPriceListOpen(false);
+    setIsFormOpen(true);
+    scrollToContent('service-form');
+  };
+
+  const togglePriceList = () => {
+    const shouldOpenPriceList = !isPriceListOpen;
+
+    setIsFormOpen(false);
+    setIsPriceListOpen(shouldOpenPriceList);
+
+    if (shouldOpenPriceList) {
+      scrollToContent('price-list');
+    }
   };
 
   const decolorante = toNumber(values.decolorante);
@@ -228,10 +258,10 @@ function App() {
         </div>
 
         <div className="hero-actions">
-          <button className="primary-action" type="button" onClick={() => setIsFormOpen(true)}>
+          <button className="primary-action" type="button" onClick={openServiceForm}>
             Nuevo servicio
           </button>
-          <button className="secondary-action" type="button" onClick={() => setIsPriceListOpen((isOpen) => !isOpen)}>
+          <button className="secondary-action" type="button" onClick={togglePriceList}>
             {isPriceListOpen ? 'Ocultar precios' : 'Ver precios'}
           </button>
         </div>
@@ -240,7 +270,7 @@ function App() {
       {isPriceListOpen ? <PriceList products={products} /> : null}
 
       {isFormOpen ? (
-        <form className="service-form">
+        <form className="service-form" id="service-form">
           <div className="form-header">
             <div>
               <span className="eyebrow">Ficha de color</span>
@@ -461,7 +491,7 @@ function AutoCard({ label, value }: { label: string; value: string }) {
 
 function PriceList({ products }: { products: ProductPrice[] }) {
   return (
-    <section className="price-card">
+    <section className="price-card" id="price-list">
       <div className="price-header">
         <div>
           <span className="eyebrow">Lista de precios</span>
