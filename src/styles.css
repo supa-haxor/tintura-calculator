@@ -394,6 +394,26 @@ h2 {
   font-weight: 950;
 }
 
+.discount-heading {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.discount-heading strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #ffe7e7;
+  color: #a33f4a;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
 .form-actions {
   display: flex;
   justify-content: flex-end;

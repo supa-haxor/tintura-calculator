@@ -199,6 +199,7 @@ function App() {
   const valorEstimadoServicio = gananciasServicio + gananciasProductos + totalProductos;
   const cobro = toNumber(values.cobro);
   const descuento = cobro > 0 ? Math.max(valorEstimadoServicio - cobro, 0) : 0;
+  const descuentoPorcentaje = valorEstimadoServicio > 0 ? (descuento / valorEstimadoServicio) * 100 : 0;
 
   const decoloranteProduct = getProduct('decolorante');
   const tinturaProduct = getProduct('tintura');
@@ -424,7 +425,7 @@ function App() {
           <fieldset className="form-section">
             <legend>Descuento</legend>
             <div className="field-list">
-              <AutoCard label="Descuento" value={formatMoney(descuento)} />
+              <DiscountCard value={formatMoney(descuento)} percentage={descuentoPorcentaje} />
             </div>
           </fieldset>
 
@@ -498,6 +499,18 @@ function AutoCard({ label, value, variant }: { label: string; value: string; var
   return (
     <label className={`input-card auto-card ${variant ? `auto-card-${variant}` : ''}`}>
       <span>{label}</span>
+      <input disabled value={value} />
+    </label>
+  );
+}
+
+function DiscountCard({ value, percentage }: { value: string; percentage: number }) {
+  return (
+    <label className="input-card auto-card discount-card">
+      <div className="discount-heading">
+        <span>Descuento</span>
+        <strong>{formatNumber(percentage)}%</strong>
+      </div>
       <input disabled value={value} />
     </label>
   );
