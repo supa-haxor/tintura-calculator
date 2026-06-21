@@ -269,7 +269,7 @@ h2 {
 
 .tintura-row {
   display: grid;
-  grid-template-columns: 95px 1fr auto auto;
+  grid-template-columns: 95px 1fr 140px auto auto;
   gap: 10px;
   align-items: center;
 }
@@ -281,11 +281,15 @@ h2 {
 }
 
 .auto-card {
-  background: #fff7fb;
+  border-color: #f1d28a;
+  background: #fff8dc;
+  box-shadow: inset 0 0 0 1px rgba(199, 146, 37, 0.08);
 }
 
 .auto-card input:disabled {
-  color: #9a7587;
+  border-color: #efd69b;
+  background: #fffdf1;
+  color: #7a5423;
   opacity: 1;
 }
 

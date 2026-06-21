@@ -35,6 +35,11 @@ type ValueField = Field & {
   onChange: (value: string) => void;
 };
 
+type Tintura = {
+  nombre: string;
+  gramos: string;
+};
+
 const clientFields: Field[] = [
   { label: 'Nombre', name: 'nombre', placeholder: 'Ej: Maria' },
   { label: 'Apellido', name: 'apellido', placeholder: 'Ej: Rodriguez' },
@@ -80,19 +85,21 @@ const toNumber = (value: string) => Number(value) || 0;
 function App() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [values, setValues] = useState<ServiceValues>(initialValues);
-  const [tinturas, setTinturas] = useState(['']);
+  const [tinturas, setTinturas] = useState<Tintura[]>([{ nombre: '', gramos: '' }]);
 
   const updateValue = (name: keyof ServiceValues, value: string) => {
     setValues((currentValues) => ({ ...currentValues, [name]: value }));
   };
 
   const addTintura = () => {
-    setTinturas((currentTinturas) => [...currentTinturas, '']);
+    setTinturas((currentTinturas) => [...currentTinturas, { nombre: '', gramos: '' }]);
   };
 
-  const updateTintura = (index: number, value: string) => {
+  const updateTintura = (index: number, field: keyof Tintura, value: string) => {
     setTinturas((currentTinturas) =>
-      currentTinturas.map((tintura, tinturaIndex) => (tinturaIndex === index ? value : tintura)),
+      currentTinturas.map((tintura, tinturaIndex) =>
+        tinturaIndex === index ? { ...tintura, [field]: value } : tintura,
+      ),
     );
   };
 
@@ -103,7 +110,7 @@ function App() {
   const decolorante = toNumber(values.decolorante);
   const fantasiaColor = toNumber(values.fantasiaColor);
   const keratinaAlisado = toNumber(values.keratinaAlisado);
-  const totalTinturas = tinturas.reduce((total, tintura) => total + toNumber(tintura), 0);
+  const totalTinturas = tinturas.reduce((total, tintura) => total + toNumber(tintura.gramos), 0);
   const plexProtecteur = decolorante * 0.066;
   const oxicremPorTintura = totalTinturas * 1.5;
   const oxicremPorDecolorante = decolorante;
@@ -235,14 +242,21 @@ function App() {
                     <label className="tintura-row" key={`tintura-${index + 1}`}>
                       <span>Tintura {index + 1}</span>
                       <input
-                        name={`tintura-${index + 1}`}
+                        name={`tintura-${index + 1}-nombre`}
+                        type="text"
+                        value={tintura.nombre}
+                        placeholder="Nombre o tono"
+                        onChange={(event) => updateTintura(index, 'nombre', event.target.value)}
+                      />
+                      <input
+                        name={`tintura-${index + 1}-gramos`}
                         type="number"
                         min="0"
-                        value={tintura}
-                        placeholder="Cantidad"
-                        onChange={(event) => updateTintura(index, event.target.value)}
+                        value={tintura.gramos}
+                        placeholder="Gramos"
+                        onChange={(event) => updateTintura(index, 'gramos', event.target.value)}
                       />
-                      <span className="unit-pill">g</span>
+                      <span className="unit-pill">gr</span>
                       {tinturas.length > 1 ? (
                         <button className="remove-button" type="button" onClick={() => removeTintura(index)}>
                           Quitar
@@ -259,7 +273,7 @@ function App() {
                   name: 'decolorante',
                   type: 'number',
                   placeholder: 'Cantidad',
-                  unit: 'g',
+                  unit: 'gr',
                   value: values.decolorante,
                   onChange: (value) => updateValue('decolorante', value),
                 }}
@@ -270,12 +284,12 @@ function App() {
                   name: 'fantasiaColor',
                   type: 'number',
                   placeholder: 'Cantidad',
-                  unit: 'g',
+                  unit: 'gr',
                   value: values.fantasiaColor,
                   onChange: (value) => updateValue('fantasiaColor', value),
                 }}
               />
-              <AutoCard label="Plex protecteur" value={`${formatNumber(plexProtecteur)} g`} />
+              <AutoCard label="Plex protecteur" value={`${formatNumber(plexProtecteur)} gr`} />
               <InputCard
                 field={{
                   label: 'Volumen de oxicrem',
@@ -285,8 +299,8 @@ function App() {
                   onChange: (value) => updateValue('volumenOxicrem', value),
                 }}
               />
-              <AutoCard label="Cantidad de oxicrem por tintura" value={`${formatNumber(oxicremPorTintura)} g`} />
-              <AutoCard label="Cantidad de oxicrem por decolorante" value={`${formatNumber(oxicremPorDecolorante)} g`} />
+              <AutoCard label="Cantidad de oxicrem por tintura" value={`${formatNumber(oxicremPorTintura)} gr`} />
+              <AutoCard label="Cantidad de oxicrem por decolorante" value={`${formatNumber(oxicremPorDecolorante)} gr`} />
               <InputCard
                 field={{
                   label: 'Keratina alisado permanente',
