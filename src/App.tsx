@@ -58,6 +58,13 @@ type ServicePrices = {
   cepillados: ServicePrice[];
 };
 
+type ReceiptRow = {
+  label: string;
+  value: string;
+  variant?: 'success' | 'featured' | 'danger';
+  badge?: string;
+};
+
 const products = productPrices as ProductPrice[];
 const servicePrices = servicePriceData as ServicePrices;
 
@@ -194,9 +201,10 @@ function App() {
     toNumber(values.toallasDesechables) * getUnitPrice('toallasDesechables');
   const totalProductos = totalQuimicosUsados + totalMateriales;
   const gananciasProductos = totalProductos * 0.3;
-  const costoPorServicios = totalProductos + precioCorte + precioCepillado;
-  const valorEstimadoServicio = costoPorServicios + gananciasProductos + totalProductos;
-  const gananciaServicio = valorEstimadoServicio - (costoPorServicios + totalProductos);
+  const servicioAplicacionProducto = totalProductos;
+  const totalServicio = precioCorte + precioCepillado + servicioAplicacionProducto;
+  const gananciaServicio = gananciasProductos + totalServicio;
+  const valorEstimadoServicio = totalServicio + gananciasProductos + totalProductos;
   const cobro = toNumber(values.cobro);
   const descuento = cobro > 0 ? Math.max(valorEstimadoServicio - cobro, 0) : 0;
   const descuentoPorcentaje = valorEstimadoServicio > 0 ? (descuento / valorEstimadoServicio) * 100 : 0;
@@ -261,6 +269,31 @@ function App() {
       placeholder: '$0.00',
       value: values.cobro,
       onChange: (value) => updateValue('cobro', value),
+    },
+  ];
+  const productReceiptRows: ReceiptRow[] = [
+    { label: 'Precio quimicos usados', value: formatMoney(totalQuimicosUsados) },
+    { label: 'Precio materiales usados', value: formatMoney(totalMateriales) },
+    { label: 'Total productos', value: formatMoney(totalProductos), variant: 'featured' },
+    { label: 'Ganancias de productos', value: formatMoney(gananciasProductos), variant: 'success' },
+  ];
+  const serviceReceiptRows: ReceiptRow[] = [
+    { label: 'Precio corte', value: formatMoney(precioCorte) },
+    { label: 'Precio cepillado', value: formatMoney(precioCepillado) },
+    { label: 'Servicio de aplicacion de producto', value: formatMoney(servicioAplicacionProducto) },
+    { label: 'Total de servicio', value: formatMoney(totalServicio), variant: 'featured' },
+  ];
+  const finalReceiptRows: ReceiptRow[] = [
+    { label: 'Total productos', value: formatMoney(totalProductos) },
+    { label: 'Total de servicio', value: formatMoney(totalServicio) },
+    { label: 'Ganancia del servicio', value: formatMoney(gananciaServicio), variant: 'success' },
+    { label: 'Valor estimado del servicio', value: formatMoney(valorEstimadoServicio), variant: 'featured' },
+    { label: 'Cobro', value: formatMoney(cobro) },
+    {
+      label: 'Descuento',
+      value: formatMoney(descuento),
+      variant: 'danger',
+      badge: `${formatNumber(descuentoPorcentaje)}%`,
     },
   ];
 
@@ -404,36 +437,19 @@ function App() {
 
           <fieldset className="form-section auto-section">
             <legend>Resultados automaticos</legend>
-            <div className="field-list">
-              <AutoCard label="Precio quimicos usados" value={formatMoney(totalQuimicosUsados)} />
-              <AutoCard label="Precio materiales usados" value={formatMoney(totalMateriales)} />
-              <AutoCard label="Total productos" value={formatMoney(totalProductos)} />
-              <AutoCard label="Ganancias por productos" value={formatMoney(gananciasProductos)} variant="success" />
-              <AutoCard label="Precio corte" value={formatMoney(precioCorte)} />
-              <AutoCard label="Precio cepillado" value={formatMoney(precioCepillado)} />
-              <AutoCard label="Costo por servicios" value={formatMoney(costoPorServicios)} />
-              <AutoCard label="Ganancia del servicio" value={formatMoney(gananciaServicio)} variant="success" />
-              <AutoCard
-                label="Valor estimado del servicio"
-                value={formatMoney(valorEstimadoServicio)}
-                variant="featured"
-              />
+            <div className="receipt-grid">
+              <ReceiptCard title="Recibo productos" rows={productReceiptRows} />
+              <ReceiptCard title="Recibo servicios" rows={serviceReceiptRows} />
+              <ReceiptCard title="Recibo final" rows={finalReceiptRows} featured />
             </div>
           </fieldset>
 
           <FieldGroup title="Cobro final" fields={paymentFields} />
 
-          <fieldset className="form-section">
-            <legend>Descuento</legend>
-            <div className="field-list">
-              <DiscountCard value={formatMoney(descuento)} percentage={descuentoPorcentaje} />
-            </div>
-          </fieldset>
-
         </form>
         <FloatingReceipt
           totalProductos={formatMoney(totalProductos)}
-          costoPorServicios={formatMoney(costoPorServicios)}
+          totalServicio={formatMoney(totalServicio)}
           valorEstimadoServicio={formatMoney(valorEstimadoServicio)}
           gananciaServicio={formatMoney(gananciaServicio)}
         />
@@ -507,26 +523,33 @@ function AutoCard({ label, value, variant }: { label: string; value: string; var
   );
 }
 
-function DiscountCard({ value, percentage }: { value: string; percentage: number }) {
+function ReceiptCard({ title, rows, featured = false }: { title: string; rows: ReceiptRow[]; featured?: boolean }) {
   return (
-    <label className="input-card auto-card discount-card">
-      <div className="discount-heading">
-        <span>Descuento</span>
-        <strong>{formatNumber(percentage)}%</strong>
-      </div>
-      <input disabled value={value} />
-    </label>
+    <section className={`breakdown-receipt ${featured ? 'breakdown-receipt-featured' : ''}`}>
+      <h3>{title}</h3>
+      <dl>
+        {rows.map((row) => (
+          <div className={`receipt-row ${row.variant ? `receipt-row-${row.variant}` : ''}`} key={row.label}>
+            <dt>{row.label}</dt>
+            <dd>
+              {row.badge ? <span className="receipt-badge">{row.badge}</span> : null}
+              {row.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </section>
   );
 }
 
 function FloatingReceipt({
   totalProductos,
-  costoPorServicios,
+  totalServicio,
   valorEstimadoServicio,
   gananciaServicio,
 }: {
   totalProductos: string;
-  costoPorServicios: string;
+  totalServicio: string;
   valorEstimadoServicio: string;
   gananciaServicio: string;
 }) {
@@ -543,8 +566,8 @@ function FloatingReceipt({
           <dd>{totalProductos}</dd>
         </div>
         <div>
-          <dt>Costo por servicios</dt>
-          <dd>{costoPorServicios}</dd>
+          <dt>Total de servicio</dt>
+          <dd>{totalServicio}</dd>
         </div>
         <div className="receipt-featured">
           <dt>Valor estimado</dt>
