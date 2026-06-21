@@ -225,6 +225,26 @@ h2 {
   box-shadow: 0 0 0 4px rgba(215, 66, 133, 0.12);
 }
 
+.measurement-control {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.unit-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #ffe1ee;
+  color: #9d3369;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
 .full-width,
 .dynamic-card {
   grid-column: 1 / -1;
@@ -249,7 +269,7 @@ h2 {
 
 .tintura-row {
   display: grid;
-  grid-template-columns: 95px 1fr auto;
+  grid-template-columns: 95px 1fr auto auto;
   gap: 10px;
   align-items: center;
 }
