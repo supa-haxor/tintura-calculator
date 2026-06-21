@@ -640,7 +640,7 @@ h2 {
 
   .app-shell.has-floating-receipt {
     padding-right: 14px;
-    padding-bottom: 300px;
+    padding-bottom: 190px;
   }
 
   .hero-card,
@@ -686,12 +686,36 @@ h2 {
     right: 10px;
     bottom: 10px;
     left: 10px;
-    gap: 10px;
-    padding: 12px;
-    border-radius: 20px;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .floating-receipt > div:first-child {
+    display: none;
   }
 
   .receipt-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .receipt-list div {
+    display: grid;
+    gap: 2px;
+    padding: 6px 8px;
+  }
+
+  .receipt-list dt {
+    font-size: 0.66rem;
+  }
+
+  .receipt-list dd {
+    font-size: 0.78rem;
+  }
+
+  .receipt-action {
+    min-height: 42px;
+    padding: 10px 16px;
   }
 }
